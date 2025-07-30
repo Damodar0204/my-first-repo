@@ -1,0 +1,153 @@
+\documentclass[12]{article}
+
+% --- Packages ---
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{pifont}
+\usepackage{colortbl}
+\arrayrulecolor{gray!10}
+
+% --new commands--
+%\ding{33-127} for symbols
+
+
+% ---Article meta data ---
+\title{Strawberry Fields (SF)}
+\author{Dr. S. Damodaraiah}
+\date{\today}
+
+\lstset{ 
+	basicstyle=\ttfamily\small, 
+	breaklines=true, 
+	frame=single, 
+	captionpos=b, 
+	keywordstyle=\color{blue}, 
+	stringstyle=\color{red}, 
+	commentstyle=\color{green!60!black}, 
+	showspaces=false, 
+	showtabs=false, 
+	tabsize=2,
+	morekeywords={with, as} 
+} 
+
+
+\begin{document}
+\maketitle
+Great! You're diving into Strawberry Fields and PennyLane — two powerful Python libraries developed by Xanadu for simulating and programming quantum photonic systems and hybrid quantum-classical machine learning workflows.
+
+Let me briefly introduce both, compare them, and show how they fit together.
+	
+\section*{\ding{97} Strawberry Fields (SF)}
+\textbf{Purpose:} Quantum photonics simulation and programming using \textbf{continuous-variable (CV) quantum computing}.
+\subsection*{Developed by:}	
+Xanadu
+\subsection*{Features:}
+\begin{itemize}
+	\item Built for CV quantum computing (qumodes instead of qubits).
+	\item Uses Blackbird language for circuit definition.
+	\item Can simulate \textbf{Gaussian and Fock backends} (classical simulators for photonic circuits).
+	\item Supports \textbf{quantum optical gates, interferometers,} and \textbf{measurement operations} like \colorbox{gray!30}{\texttt{homodyne}}, \colorbox{gray!30}{\texttt{heterodyne}}, \colorbox{gray!30}{\texttt{Fock}}.
+\end{itemize}
+\newpage
+\subsection*{Example: Simple quantum photonic circuit}
+
+\begin{lstlisting}[language=python]
+	python
+	
+	
+	import strawberryfields as sf
+	from strawberryfields.ops import Sgate, Dgate, MeasureFock
+	eng = sf.Engine("fock", backend_options={"cutoff_dim": 5})
+	prog = sf.Program(1)
+	
+	with prog.context as q:
+	Dgate(0.5) | q[0]
+	Sgate(0.3) | q[0]
+	MeasureFock() | q[0]
+	
+	result = eng.run(prog)
+	print(result.samples)
+\end{lstlisting}
+
+\section*{\ding{97} PennyLane}
+\subsubsection*{Purpose:} Framework for \textbf{hybrid quantum-classical computing}, especially for \textbf{machine learning}, compatible with many backends.
+ \subsection*{\ding{98} Developed by:}
+ Also by Xanadu
+ \subsection*{\ding{68} Features:}
+ \begin{itemize}
+ 	\item Focused on \textbf{quantum differentiable programming}.
+ 	\item Integrates well with \textbf{PyTorch, TensorFlow, JAX}.
+ 	\item Supports both \textbf{qubit and continuous-variable models}.
+ 	\item Can \textbf{interface with Strawberry Fields}, as well as IBM Qiskit, Rigetti Forest, etc.
+ \end{itemize}
+\subsection*{\ding{99} Used for:}
+\begin{itemize}
+	\item Variational Quantum Circuits (VQCs)
+	\item Quantum Neural Networks (QNNs)
+	\item Quantum optimization \& quantum chemistry
+	\item Quantum machine learning
+\end{itemize}	
+
+\section*{\ding{101} Using Strawberry Fields inside PennyLane}
+PennyLane has a plugin for Strawberry Fields, so you can define a photonic circuit and optimize it with gradient descent!
+\subsubsection*{\ding{65}Example: Photonic circuit with PennyLane}	
+\begin{lstlisting}[language=python]
+	python
+	
+	
+	import pennylane as qml
+	from pennylane import numpy as np
+	
+	dev = qml.device("strawberryfields.fock", wires=1, cutoff_dim=10)
+	
+	@qml.qnode(dev)
+	def circuit(x):
+	qml.Displacement(x, 0.0, wires=0)
+	qml.Squeezing(0.1, 0.0, wires=0)
+	return qml.expval(qml.NumberOperator(0))
+	
+	x = np.array(0.1, requires_grad=True)
+	print(circuit(x))  # Output expectation value
+	
+	grad = qml.grad(circuit)(x)
+	print(grad)        # Gradient
+	
+\end{lstlisting}
+
+\subsection*{\ding{39} Summary Table}
+	\begin{table}[h!]
+	\centering
+	\begin{tabular} {l|l|l}
+		\hline
+		\textbf{Feature} & \textbf{Strawberry Fields} & \textbf{PennyLane} \\
+		\hline
+		
+		Type & Photonic circuit simulator &	Hybrid QML framework \\
+		\hline
+		Focus	& CV quantum computing &	Differentiable programming (QML) \\
+		\hline
+		Supports qubits? &	No &	Yes\\
+		\hline
+		Supports CV (qumodes)? &	Yes &	Yes\\
+		\hline
+		Integration & 	Native &	Via plugin (e.g. \colorbox{gray!30}{\texttt{strawberryfields.fock)}}\\
+		\hline
+	\end{tabular}	
+	\end{table}
+
+
+
+
+
+
+
+
+
+
+\end{document}
+
+
+
+
+
+
