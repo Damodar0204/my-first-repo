@@ -1,0 +1,101 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Damodar0204/Quantum/blob/main/pennylane\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#!pip install pennylane"
+      ],
+      "metadata": {
+        "id": "lmRbsJixhVqr"
+      },
+      "execution_count": 2,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pennylane as qml\n",
+        "import numpy as np"
+      ],
+      "metadata": {
+        "id": "k1wzrzj6jls9"
+      },
+      "execution_count": 3,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "dev=qml.device(\"default.qubit\",wires=1)"
+      ],
+      "metadata": {
+        "id": "g7Nk-O6-jpTk"
+      },
+      "execution_count": 4,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "@qml.qnode(dev)\n",
+        "def circuit(params):\n",
+        "  qml.RX(params,wires=0)\n",
+        "  qml.RY(params, wires=0)\n",
+        "  return qml.expval(qml.PauliZ(0))"
+      ],
+      "metadata": {
+        "id": "d2h_-u8gjpf4"
+      },
+      "execution_count": 5,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from pennylane import numpy as np\n",
+        "intial_params=np.array(0.54,requires_grad=True)\n",
+        "print(f\"initial expectation value: {circuit(intial_params)}\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "fbsBNFsut8cU",
+        "outputId": "5447e227-fb2c-4d87-ede3-0ddc8e713a15"
+      },
+      "execution_count": 7,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "initial expectation value: 0.7356641820868699\n"
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "colab": {
+      "name": "Welcome To Colab",
+      "provenance": [],
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
